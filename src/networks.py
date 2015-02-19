@@ -2,9 +2,9 @@
 
 params = {
     'bitcoin_main': {
-        'pubkey_address': 0,
+        'pubkey_address': 52,
         'script_address': 5,
-        'genesis_hash': '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f'
+        'genesis_hash': '000000000062b72c5e2ceb45fbc8587e807c155b0da735e6483dfba2f0a9c770'
     },
     'bitcoin_test': {
         'pubkey_address': 111,

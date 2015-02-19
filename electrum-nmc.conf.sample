@@ -11,13 +11,13 @@ stratum_tcp_port = 50001
 #report_stratum_tcp_port = 50001
 #report_stratum_tcp_ssl_port = 50002
 password = secret
-banner = Welcome to Electrum!
-banner_file = /etc/electrum.banner
+banner = Welcome to Electrum-NMC!
+banner_file = /etc/electrum-nmc.banner
 #irc = no
 #irc_nick = <yournickname>
 #ssl_certfile = /path/to/electrum-server.crt
 #ssl_keyfile = /path/to/electrum-server.key
-logfile = /var/log/electrum.log
+logfile = /var/log/electrum-nmc.log
 donation_address = 
 
 [leveldb]
@@ -28,7 +28,7 @@ pruning_limit = 100
 
 [bitcoind]
 bitcoind_host = localhost
-bitcoind_port = 8332
-# user and password from bitcoin.conf
+bitcoind_port = 8336
+# user and password from namecoin.conf
 bitcoind_user = 
 bitcoind_password = 

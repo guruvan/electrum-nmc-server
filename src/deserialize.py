@@ -267,7 +267,7 @@ def parse_Transaction(vds, is_coinbase):
 
 opcodes = Enumeration("Opcodes", [
     ("OP_0", 0), ("OP_PUSHDATA1", 76), "OP_PUSHDATA2", "OP_PUSHDATA4", "OP_1NEGATE", "OP_RESERVED",
-    "OP_1", "OP_2", "OP_3", "OP_4", "OP_5", "OP_6", "OP_7",
+    "OP_NAME_NEW", "OP_NAME_FIRSTUPDATE", "OP_NAME_UPDATE", "OP_4", "OP_5", "OP_6", "OP_7",
     "OP_8", "OP_9", "OP_10", "OP_11", "OP_12", "OP_13", "OP_14", "OP_15", "OP_16",
     "OP_NOP", "OP_VER", "OP_IF", "OP_NOTIF", "OP_VERIF", "OP_VERNOTIF", "OP_ELSE", "OP_ENDIF", "OP_VERIFY",
     "OP_RETURN", "OP_TOALTSTACK", "OP_FROMALTSTACK", "OP_2DROP", "OP_2DUP", "OP_3DUP", "OP_2OVER", "OP_2ROT", "OP_2SWAP",
@@ -374,13 +374,13 @@ def get_address_from_input_script(bytes):
         dec2 = [ x for x in script_GetOp(redeemScript) ]
 
         # 2 of 2
-        match2 = [ opcodes.OP_2, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_2, opcodes.OP_CHECKMULTISIG ]
+        match2 = [ opcodes.OP_NAME_FIRSTUPDATE, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_NAME_FIRSTUPDATE, opcodes.OP_CHECKMULTISIG ]
         if match_decoded(dec2, match2):
             pubkeys = [ dec2[1][1].encode('hex'), dec2[2][1].encode('hex') ]
             return pubkeys, signatures, hash_160_to_script_address(hash_160(redeemScript))
 
         # 2 of 3
-        match2 = [ opcodes.OP_2, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_3, opcodes.OP_CHECKMULTISIG ]
+        match2 = [ opcodes.OP_NAME_FIRSTUPDATE, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_NAME_UPDATE, opcodes.OP_CHECKMULTISIG ]
         if match_decoded(dec2, match2):
             pubkeys = [ dec2[1][1].encode('hex'), dec2[2][1].encode('hex'), dec2[3][1].encode('hex') ]
             return pubkeys, signatures, hash_160_to_script_address(hash_160(redeemScript))
@@ -421,6 +421,18 @@ def get_address_from_output_script(bytes):
     match = [ opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUAL ]
     if match_decoded(decoded, match):
         addr = hash_160_to_script_address(decoded[1][1])
+        return addr
+
+    # name firstupdate
+    match = [ opcodes.OP_NAME_FIRSTUPDATE, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_2DROP, opcodes.OP_2DROP, opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG ]
+    if match_decoded(decoded, match):
+        addr = hash_160_to_pubkey_address(decoded[8][1])
+        return addr
+
+    # name update
+    match = [ opcodes.OP_NAME_UPDATE, opcodes.OP_PUSHDATA4, opcodes.OP_PUSHDATA4, opcodes.OP_2DROP, opcodes.OP_DROP, opcodes.OP_DUP, opcodes.OP_HASH160, opcodes.OP_PUSHDATA4, opcodes.OP_EQUALVERIFY, opcodes.OP_CHECKSIG ]
+    if match_decoded(decoded, match):
+        addr = hash_160_to_pubkey_address(decoded[7][1])
         return addr
 
     return None

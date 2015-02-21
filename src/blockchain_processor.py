@@ -558,6 +558,10 @@ class BlockchainProcessor(Processor):
             num = int(params[0])
             result = self.bitcoind('estimatefee', [num])
 
+        elif method == 'blockchain.name.show':
+            identifier = str(params[0])
+            result = self.bitcoind('name_show', [identifier])
+
         else:
             raise BaseException("unknown method:%s" % method)
 
